@@ -1,8 +1,18 @@
 import React from "react";
 import { AsyncStorage } from "react-native";
-import { CALENDAR_STORAGE_KEY } from "./_calender";
+import { CALENDAR_STORAGE_KEY, formatCalendarResults } from "./_calender";
 
 class Api {
+  clearEntries() {
+    return AsyncStorage.clear();
+  }
+
+  getAllCalendarEntries() {
+    return AsyncStorage.getItem(CALENDAR_STORAGE_KEY).then(
+      formatCalendarResults
+    );
+  }
+
   submitEntry(date, entry) {
     // const stringifiedData = JSON.stringify({
     //   [date]: entry

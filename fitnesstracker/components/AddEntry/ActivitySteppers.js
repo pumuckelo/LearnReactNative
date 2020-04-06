@@ -8,10 +8,10 @@ const ActivitySteppers = props => {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
+        <Text style={[styles.text, { fontSize: 40 }]}>{value}</Text>
         <Text style={styles.text}>
-          {value} {activity.unit[0].toUpperCase() + activity.unit.substring(1)}
+          {activity.unit[0].toUpperCase() + activity.unit.substring(1)}
         </Text>
-        <Text></Text>
       </View>
       <View style={styles.buttons}>
         <TouchableOpacity
@@ -37,16 +37,18 @@ const ActivitySteppers = props => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 3,
+    flex: 1,
     flexDirection: "row",
     // margin: 10,
-    justifyContent: "space-around"
-    // alignItems: "center"
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 10
   },
   textContainer: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
+    // flexDirection: "row",
+    // justifyContent: "center",
     alignItems: "center"
   },
   text: {

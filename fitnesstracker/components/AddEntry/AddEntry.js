@@ -8,7 +8,7 @@ import {
 import ActivitySteppers from "./ActivitySteppers";
 import ActivitySlider from "./ActivitySlider";
 import DateHeader from "./DateHeader";
-import StyledButton from "./SubmitButton";
+import StyledButton from "./StyledButton";
 import { Entypo } from "@expo/vector-icons";
 import Api from "../../utils/api";
 import { connect } from "react-redux";
@@ -127,10 +127,23 @@ class AddEntry extends Component {
       return (
         <ScrollView style={styles.wrapper}>
           <View style={styles.secondWrapper}>
-            <View style={styles.container}>
-              <Entypo name="emoji-happy" size={200} />
-              <Text>You already submitted for today.</Text>
-              <Button onPress={this.reset} title="Reset" />
+            <View style={[styles.container, { alignItems: "center" }]}>
+              <Entypo
+                name="emoji-happy"
+                size={150}
+                style={{ color: colors.newsecondary }}
+              />
+              <Text
+                style={{
+                  color: colors.newfont,
+                  fontSize: 20,
+                  textAlign: "center",
+                  margin: 10
+                }}
+              >
+                You already submitted for today.
+              </Text>
+              <StyledButton onPress={this.reset} title="Reset" />
             </View>
           </View>
         </ScrollView>
@@ -179,8 +192,8 @@ const styles = StyleSheet.create({
     marginTop: 25,
     padding: 10,
     paddingBottom: 400,
-    fontFamily: "AvenirLTStd-Medium",
-    flex: 1
+    fontFamily: "AvenirLTStd-Medium"
+    // flex: 1
     // marginBottom: 25
   },
   secondWrapper: {

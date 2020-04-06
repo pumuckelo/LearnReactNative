@@ -6,9 +6,10 @@ const ActivitySlider = props => {
   const { activity, onSlide, value } = props;
   return (
     <View style={styles.container}>
-      <View>
-        <Text style={styles.text}>
-          {value} {activity.unit[0].toUpperCase() + activity.unit.substring(1)}
+      <View style={styles.textContainer}>
+        <Text style={[styles.text, { fontSize: 40 }]}>{value}</Text>
+        <Text style={[styles.text]}>
+          {activity.unit[0].toUpperCase() + activity.unit.substring(1)}
         </Text>
       </View>
       <Slider
@@ -31,12 +32,18 @@ const styles = StyleSheet.create({
     flex: 1,
     color: colors.white
   },
+  textContainer: {
+    justifyContent: "center",
+    alignItems: "center"
+  },
 
   container: {
     flex: 1,
     marginLeft: 25,
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    marginTop: 10,
+    marginBottom: 10
   },
   slider: {
     flex: 3
