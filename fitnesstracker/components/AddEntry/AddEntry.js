@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
 
     marginTop: 5,
     // marginBottom: 35,
-    backgroundColor: "white",
+    backgroundColor: "#071e3d",
     // borderWidth: 2,
     // borderColor: "black",
     // shadowColor: "#000",
@@ -210,12 +210,14 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: colors.heading,
+    color: "#415885",
     fontSize: 25,
     // fontWeight: "bold",
     alignSelf: "flex-start",
     margin: 10,
 
-    fontFamily: "AvenirLTStd-Medium"
+    fontFamily: "AvenirLTStd-Medium",
+    fontWeight: "bold"
   },
   activity: {
     // flex: 1,

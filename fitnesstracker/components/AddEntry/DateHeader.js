@@ -10,7 +10,7 @@ const DateHeader = props => {
       style={{
         fontWeight: "bold",
         fontSize: 20,
-        color: colors.heading,
+        color: colors.white,
         alignSelf: "flex-start",
         marginBottom: 10
       }}

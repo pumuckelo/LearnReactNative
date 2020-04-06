@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, Slider, StyleSheet } from "react-native";
+import colors from "../../utils/colors";
 
 const ActivitySlider = props => {
   const { activity, onSlide, value } = props;
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "AvenirLTStd-Medium",
     flex: 1,
-    color: "#071e3d"
+    color: colors.white
   },
 
   container: {

@@ -14,7 +14,10 @@ const StyledButton = props => {
     },
     button: {
       backgroundColor: colors.primary,
-      color: colors.white,
+      backgroundColor: "#21e6c1",
+      //   backgroundColor: colors.newbackground,
+      //   color: colors.white,
+
       borderRadius: 20,
       padding: 10,
       paddingRight: 40,
@@ -27,6 +30,8 @@ const StyledButton = props => {
     },
     text: {
       color: colors.white,
+      //   color: colors.newprimary,
+      //   color: "#071e3d",
       fontFamily: "AvenirLTStd-Medium",
       fontSize: 20
     }

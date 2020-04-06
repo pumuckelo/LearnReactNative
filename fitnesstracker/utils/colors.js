@@ -10,5 +10,12 @@ export default colors = {
   lightPurp: "#7c53c3",
   pink: "#b93fb3",
   primary: "#21e6c1",
-  heading: "#616161"
+  heading: "#616161",
+
+  newheading: "#415885",
+  newbackground: "#071e3d",
+  newfont: "#fff",
+  newprimary: "#21e6c1",
+  newsecondary: "#278ea5",
+  newthird: "#1f4287"
 };

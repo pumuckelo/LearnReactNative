@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: "AvenirLTStd-Medium",
-    color: "#071e3d"
+    color: colors.white
   },
   buttons: {
     flex: 1,
