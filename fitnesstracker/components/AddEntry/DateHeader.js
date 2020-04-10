@@ -1,8 +1,9 @@
 import React from "react";
 import { View, Text } from "react-native";
 import colors from "../../utils/colors";
+import PropTypes from "prop-types";
 
-const DateHeader = props => {
+const DateHeader = (props) => {
   const { date } = props;
 
   return (
@@ -12,12 +13,16 @@ const DateHeader = props => {
         fontSize: 20,
         color: colors.white,
         alignSelf: "flex-start",
-        marginBottom: 10
+        marginBottom: 10,
       }}
     >
       {date}
     </Text>
   );
+};
+
+DateHeader.propTypes = {
+  date: PropTypes.string,
 };
 
 export default DateHeader;

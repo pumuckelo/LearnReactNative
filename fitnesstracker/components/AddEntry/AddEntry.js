@@ -1,9 +1,16 @@
 import React, { Component } from "react";
-import { View, Text, Button, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  ScrollView,
+  Platform,
+} from "react-native";
 import {
   getMetricMetaInfo,
   timeToString,
-  getDailyReminder
+  getDailyReminder,
 } from "../../utils/helpers";
 import ActivitySteppers from "./ActivitySteppers";
 import ActivitySlider from "./ActivitySlider";
@@ -19,6 +26,7 @@ import { white } from "../../utils/colors";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
+import _ from "lodash";
 
 let customFonts = {
   "AvenirLTStd-Medium": require("../../assets/fonts/AvenirLTStd-Medium.otf"),
@@ -28,17 +36,20 @@ let customFonts = {
   "Nunito-Regular": require("../../assets/fonts/Nunito-Regular.ttf"),
   "Nunito-Bold": require("../../assets/fonts/Nunito-Bold.ttf"),
   "Nunito-Black": require("../../assets/fonts/Nunito-Black.ttf"),
-  "Nunito-SemiBold": require("../../assets/fonts/Nunito-SemiBold.ttf")
+  "Nunito-SemiBold": require("../../assets/fonts/Nunito-SemiBold.ttf"),
 };
 
 class AddEntry extends Component {
   state = {
-    run: 0,
-    bike: 0,
-    swim: 0,
-    sleep: 0,
-    eat: 0,
-    fontsLoaded: false
+    entry: {
+      run: 0,
+      bike: 0,
+      swim: 0,
+      sleep: 0,
+      eat: 0,
+    },
+    fontsLoaded: false,
+    date: undefined,
   };
 
   async _loadFontsAsync() {
@@ -48,28 +59,38 @@ class AddEntry extends Component {
 
   componentDidMount() {
     this._loadFontsAsync();
+
+    let date = _.get(this.props, "route.params.date");
+    this.setState({ date: date });
   }
   submit = () => {
     //timetrostring returns a timestamp that will be used as a key in the database
-    const date = timeToString();
-    const entry = this.state;
+    const date = this.state.date || timeToString();
+    const entry = this.state.entry;
     // ????????
     Api.submitEntry(date, entry);
-    //reset the state
-    this.setState({
-      run: 0,
-      bike: 0,
-      swim: 0,
-      sleep: 0,
-      eat: 0
-    });
 
     //redux
     this.props.dispatch(
       addEntry({
-        [date]: entry
+        [date]: entry,
       })
     );
+
+    //if accessing addentry screen through entrydetail and not "AddForToday", then after submitting,
+    //redicrect user back to the detail page
+    if (this.state.date) {
+      this.props.navigation.navigate("EntryDetail", {
+        date: this.state.date,
+        entry,
+      });
+    }
+
+    //reset the state
+    this.setState({
+      entry: { run: 0, bike: 0, swim: 0, sleep: 0, eat: 0 },
+      date: undefined,
+    });
   };
 
   reset = () => {
@@ -78,7 +99,7 @@ class AddEntry extends Component {
     //update redux
     this.props.dispatch(
       addEntry({
-        [date]: getDailyReminder()
+        [date]: getDailyReminder(),
       })
     );
     //route to home
@@ -87,32 +108,36 @@ class AddEntry extends Component {
     Api.removeEntry(date);
   };
 
-  increment = metric => {
+  increment = (metric) => {
     const { max, step } = getMetricMetaInfo(metric);
 
-    this.setState(prevState => {
-      let count = prevState[metric] + step;
+    this.setState((prevState) => {
+      let count = prevState.entry[metric] + step;
 
       return {
-        [metric]: count < max ? count : max
+        ...prevState,
+        entry: { ...prevState.entry, [metric]: count < max ? count : max },
       };
     });
   };
 
-  decrement = metric => {
+  decrement = (metric) => {
     const { step } = getMetricMetaInfo(metric);
 
-    this.setState(prevState => {
+    this.setState((prevState) => {
       let count = prevState[metric] - step;
       return {
-        [metric]: count > 0 ? count : 0
+        ...prevState,
+        entry: { ...prevState.entry, [metric]: count > 0 ? count : 0 },
       };
     });
   };
 
   slide = (metric, value) => {
-    this.setState({
-      [metric]: value
+    this.setState((prevState) => {
+      return {
+        entry: { ...prevState.entry, [metric]: value },
+      };
     });
   };
 
@@ -123,7 +148,7 @@ class AddEntry extends Component {
       return <AppLoading />;
     }
 
-    if (this.props.alreadySubmitted) {
+    if (this.props.alreadySubmitted && !this.state.date) {
       return (
         <ScrollView style={styles.wrapper}>
           <View style={styles.secondWrapper}>
@@ -138,7 +163,7 @@ class AddEntry extends Component {
                   color: colors.newfont,
                   fontSize: 20,
                   textAlign: "center",
-                  margin: 10
+                  margin: 10,
                 }}
               >
                 You already submitted for today.
@@ -153,11 +178,19 @@ class AddEntry extends Component {
     return (
       <ScrollView style={styles.wrapper}>
         <View style={styles.secondWrapper}>
-          <Text style={styles.heading}>Submit for today</Text>
+          <Text style={styles.heading}>
+            Submit for {this.state.date ? this.state.date : "today"}
+          </Text>
           <View style={styles.container}>
-            <DateHeader date={new Date().toLocaleDateString()} />
-            {Object.keys(metricInfo).map(key => {
-              let value = this.state[key];
+            <DateHeader
+              date={
+                this.state.date
+                  ? this.state.date
+                  : new Date().toLocaleDateString()
+              }
+            />
+            {Object.keys(metricInfo).map((key) => {
+              let value = this.state.entry[key];
               const activity = metricInfo[key];
               return (
                 <View style={styles.activity} key={key}>
@@ -172,7 +205,7 @@ class AddEntry extends Component {
                   ) : (
                     <ActivitySlider
                       activity={activity}
-                      onSlide={value => this.slide(key, value)}
+                      onSlide={(value) => this.slide(key, value)}
                       value={value}
                     />
                   )}
@@ -189,22 +222,21 @@ class AddEntry extends Component {
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginTop: 25,
     padding: 10,
     paddingBottom: 400,
-    fontFamily: "AvenirLTStd-Medium"
+    fontFamily: "AvenirLTStd-Medium",
     // flex: 1
     // marginBottom: 25
   },
   secondWrapper: {
-    marginBottom: 30
+    marginBottom: 20,
   },
   container: {
     alignItems: "center",
     justifyContent: "center",
     margin: 10,
     padding: 20,
-    borderRadius: 20,
+    borderRadius: Platform.OS == "ios" ? 30 : 20,
 
     marginTop: 5,
     // marginBottom: 35,
@@ -219,7 +251,7 @@ const styles = StyleSheet.create({
     // shadowOpacity: 0.23,
     // shadowRadius: 2.62,
     fontFamily: "AvenirLTStd-Medium",
-    elevation: 10
+    elevation: 10,
   },
   heading: {
     color: colors.heading,
@@ -230,21 +262,21 @@ const styles = StyleSheet.create({
     margin: 10,
 
     fontFamily: "AvenirLTStd-Medium",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   activity: {
     // flex: 1,
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const date = timeToString();
 
   return {
-    alreadySubmitted: state[date] && typeof state[date].today === "undefined"
+    alreadySubmitted: state[date] && typeof state[date].today === "undefined",
   };
 };
 

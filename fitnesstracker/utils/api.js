@@ -25,14 +25,15 @@ class Api {
     );
   }
 
-  async removeEntry(date) {
-    return AsyncStorage.getItem(CALENDAR_STORAGE_KEY).then(results => {
+  removeEntry(date) {
+    return AsyncStorage.getItem(CALENDAR_STORAGE_KEY).then(async (results) => {
       console.log(results);
-      const data = JSON.parse(results);
+      const data = await JSON.parse(results);
       console.log(data);
       data[date] = undefined;
-      delete data[date];
-      AsyncStorage.setItem(CALENDAR_STORAGE_KEY, JSON.stringify(data));
+      AsyncStorage.setItem(CALENDAR_STORAGE_KEY, JSON.stringify(data))
+        .then(console.log("yey"))
+        .catch((err) => console.log(err));
     });
   }
 }
